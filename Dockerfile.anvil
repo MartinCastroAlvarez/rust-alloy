@@ -1,0 +1,33 @@
+FROM ubuntu:22.04
+
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required packages
+# Clean up apt cache after installation to reduce image size
+# The rm command removes package lists that are no longer needed
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*  # Cleanup to reduce image size and improve security
+
+
+# Install Foundry
+RUN curl -L https://foundry.paradigm.xyz | bash
+ENV PATH="/root/.foundry/bin:${PATH}"
+RUN foundryup
+
+# Install nodejs and npm
+RUN apt-get update && apt-get install -y nodejs npm jq
+RUN cd /tmp && npm init -y && npm install @openzeppelin/contracts
+
+# Copy and set up startup script
+COPY start-anvil.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/start-anvil.sh
+
+# Expose default Anvil port
+EXPOSE 8545
+
+# Set the entrypoint to our startup script
+ENTRYPOINT ["start-anvil.sh"] 
