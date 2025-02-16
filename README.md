@@ -2,7 +2,7 @@
 
 Dockerized Rust API using Tokio, Warp, Alloy, Foundry, and Grafana.
 
-![wallpapers.jpg](./wallpapers.jpg)
+![wallpapers.jpg](./wallpaper.jpg)
 
 ## References
 
